@@ -4,14 +4,17 @@ USE Superstore;
 ALTER TABLE 
   Superstore ALTER COLUMN Data_Zamówienia date;
 
+
 ALTER TABLE 
   Superstore ALTER COLUMN Data_dostawy date;
 
 
---Dodanie usuniętych zer na początku kodu pocztowego
+--Zmiana typu danych kolumny z kodem pocztowym
 ALTER TABLE 
   Superstore ALTER COLUMN Kod_pocztowy nvarchar(255);
 
+
+--Dodanie usuniętych zer na początku kodu pocztowego 
 UPDATE
 	Superstore
 SET Kod_pocztowy= CONCAT('0', Kod_pocztowy)
@@ -39,11 +42,13 @@ CREATE TABLE Miasto (
     FOREIGN KEY ([StanID]) REFERENCES Stan([StanID])
 );
 
+
 CREATE TABLE Klient(
 	[KlientID] nvarchar(255) PRIMARY KEY NOT NULL,
 	[Imie i nazwisko] nvarchar(255) NOT NULL,
 	[Rodzaj klienta] nvarchar(255) NOT NULL,
 );
+
 
 CREATE TABLE Zamowienie(
 	[ZamowienieID] nvarchar(255) PRIMARY KEY NOT NULL, 
@@ -56,10 +61,12 @@ CREATE TABLE Zamowienie(
 	FOREIGN KEY ([MiastoID]) REFERENCES Miasto([MiastoID])
 );
 
+
 CREATE TABLE Kategoria(
 	[KategoriaID] int IDENTITY(1,1) PRIMARY KEY, 
 	[Kategoria] nvarchar(255) NOT NULL,
 );
+
 
 CREATE TABLE Podkategoria(
 	[PodkategoriaID] int IDENTITY(1,1) PRIMARY KEY, 
@@ -68,12 +75,14 @@ CREATE TABLE Podkategoria(
 	FOREIGN KEY ([KategoriaID]) REFERENCES Kategoria([KategoriaID])
 );
 
+
 CREATE TABLE Produkt(
 	[ProduktID] nvarchar(255) PRIMARY KEY NOT NULL, 
 	[Nazwa Produktu] nvarchar(255) NOT NULL,
 	[PodkategoriaID] int,
 	FOREIGN KEY ([PodkategoriaID]) REFERENCES Podkategoria([PodkategoriaID])
 );
+
 
 CREATE TABLE [Szczegoly zamowienia](
 	[ZamowienieID] nvarchar(255), 
@@ -109,7 +118,6 @@ FROM
   JOIN Stan AS st ON su.[Stan] = st.[Stan];
 
 
-
 INSERT INTO Klient([KlientID], [Imie i nazwisko], [Rodzaj klienta]) 
 SELECT 
 	DISTINCT([Klient_ID]),
@@ -130,7 +138,6 @@ SELECT
 FROM
 	Superstore AS su
 	LEFT JOIN Miasto AS m ON su.[Miasto] = m.[Miasto] AND su.[Kod_pocztowy] = m.[Kod pocztowy];
-
 
 
 INSERT INTO Kategoria([Kategoria])
@@ -154,6 +161,7 @@ SELECT
 	pk.[PodkategoriaID]
 FROM Superstore as su
 JOIN Podkategoria AS pk ON pk.[Podkategoria] = su.[Podkategoria];
+
 
 INSERT INTO [Szczegoly zamowienia]([ZamowienieID], [ProduktID], [Cena])
 SELECT
